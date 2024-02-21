@@ -19,7 +19,8 @@ export const addProduct = async (req: Request, res: Response) => {
     }
 }
 
-export const getProduit = async (req: Request, res: Response) => {
+// 
+export const getProducts = async (req: Request, res: Response) => {
     
     try {
         const produits: any = await Produit
@@ -29,18 +30,24 @@ export const getProduit = async (req: Request, res: Response) => {
         res.status(201).json({
             message: 'La liste de produit',
             produits
-            // produits: {
-            //     fournisseur: {
-            //         nom: produits.fournisseur.nom,
-            //         prenom: produits.fournisseur.prenom,
-            //         adress: produits.fournisseur.adresse,
-            //         tel: produits.fourni
-            //     }
-            // }
         })
     } catch (error) {
         res.status(500).json({
             message: 'Error: '+error
         })
     }
+}
+
+// 
+export const getProduct = async (req: Request, res: Response) => {
+    
+}
+
+
+export const updateProduct = async (req: Request, res: Response) => {
+    
+}
+
+export const deleteProduct = async (req: Request, res: Response) => {
+    
 }

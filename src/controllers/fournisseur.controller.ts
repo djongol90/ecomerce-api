@@ -31,6 +31,34 @@ export const addFournisseur = async (req: Request, res: Response) => {
 
 
 
+// la authentification 
+export const login = async (req:Request, res: Response) => {
+    const userData = req.body;
+    try {
+        const user = await Fournisseur.findOne({email: userData.email});
+        if (!user) {
+            res.status(404).json({
+                message: "L'email ou le mot de passe est incorrect!"
+            })
+        } else {
+            const isTrue = bcrypt.compareSync(userData.password, user.password);
+            if (!isTrue) {
+                res.status(404).json({
+                    message: "Le mot de passe est incorrect!"
+                })
+            } else {
+                
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "Erreur: "+error
+        });
+    }
+}
+
+
+// La fonction qui retourne la liste de tous le fournisseur
 export const getFournisseurs = async (req: Request, res: Response) => {
     
     try {
@@ -45,4 +73,28 @@ export const getFournisseurs = async (req: Request, res: Response) => {
             message: "Erreur: "+error
         })
     }
+}
+
+
+// LA fonction qui retourne un seul fournisseur 
+export const getFournisseur = async (req: Request, res: Response) => {
+    
+}
+
+
+// La fonction qui nous permet de modifier un fournisseur
+export const updateFournisseur = async (req: Request, res: Response) => {
+    
+}
+
+// La fonction pour recuperation de mot de passe
+export const forgetPassword = async (req: Request, res: Response) => {
+    
+}
+
+
+// la fonction qui nous permet de modifier le mot de passe
+
+export const updatePassword = async (req: Request, res: Response) => {
+    
 }
