@@ -5,12 +5,16 @@ import Produit from "../models/produit.model";
 
 export const addProduct = async (req: Request, res: Response) => {
     const data = req.body;
+    const userData = (req as any).userData;
 
     try {
+        data.fournisseur = userData.userId;
         const newProduit = new Produit(data);
         await newProduit.save();
         res.status(202).json({
-            message: 'Le produit a ete enregistre!'
+            message: 'Le produit a ete enregistre!',
+            userData,
+            newProduit
         })
     } catch (error) {
         res.status(500).json({

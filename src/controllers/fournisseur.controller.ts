@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Fournisseur from "../models/fournisseur.model";
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 
 export const addFournisseur = async (req: Request, res: Response) => {
@@ -35,7 +36,8 @@ export const addFournisseur = async (req: Request, res: Response) => {
 export const login = async (req:Request, res: Response) => {
     const userData = req.body;
     try {
-        const user = await Fournisseur.findOne({email: userData.email});
+        const user = await Fournisseur
+        .findOne({email: userData.email});
         if (!user) {
             res.status(404).json({
                 message: "L'email ou le mot de passe est incorrect!"
@@ -47,7 +49,21 @@ export const login = async (req:Request, res: Response) => {
                     message: "Le mot de passe est incorrect!"
                 })
             } else {
-                
+                const token = jwt.sign(
+                    {
+                        userId: user._id,
+                        email: user.email
+                    },
+                    'AZERTY',
+                    {
+                        expiresIn: '1h'
+                    }
+                )
+                res.status(200).json({
+                    message: 'Connecté',
+                    token,
+                    user
+                })
             }
         }
     } catch (error) {
