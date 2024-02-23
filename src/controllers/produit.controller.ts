@@ -1,14 +1,18 @@
 import { Request, Response } from "express";
 import Produit from "../models/produit.model";
-
+const runChatGPT = require('../utils/chatGPT.utils');
 
 
 export const addProduct = async (req: Request, res: Response) => {
     const data = req.body;
     const userData = (req as any).userData;
-
+    const isDescription = req.query.isDescription;
     try {
         data.fournisseur = userData.userId;
+        console.log(isDescription)
+        if(isDescription === '0'){
+            data.description = await runChatGPT(data.description);
+        }
         const newProduit = new Produit(data);
         await newProduit.save();
         res.status(202).json({
