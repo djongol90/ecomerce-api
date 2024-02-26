@@ -94,13 +94,32 @@ export const getFournisseurs = async (req: Request, res: Response) => {
 
 // LA fonction qui retourne un seul fournisseur 
 export const getFournisseur = async (req: Request, res: Response) => {
-    
+    try {
+        const fournisseurId = req.params.id
+        const fournisseur = await Fournisseur.findById(fournisseurId).select('-password');
+        res.status(200).json({fournisseur});
+    } catch (error) {
+        res.status(500).json({
+            message: "Erreur: "+error
+        })
+    }
 }
 
 
 // La fonction qui nous permet de modifier un fournisseur
 export const updateFournisseur = async (req: Request, res: Response) => {
-    
+    const data = req.body;
+    const email = (req as any).userData.email
+    try {
+        await Fournisseur.updateOne({email: email}, data);
+        res.status(200).json({
+            message: 'Mise a jour effectué',
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Erreur: "+error
+        })
+    }
 }
 
 // La fonction pour recuperation de mot de passe
@@ -112,5 +131,30 @@ export const forgetPassword = async (req: Request, res: Response) => {
 // la fonction qui nous permet de modifier le mot de passe
 
 export const updatePassword = async (req: Request, res: Response) => {
-    
+    try {
+        const userId = (req as any).userData.userId;
+        const newPassword = req.body.newPassword;
+        const oldPassword = req.body.oldPassword;
+
+        const fournisseur = await Fournisseur.findById(userId);
+        const isOldPassword = bcrypt.compareSync(oldPassword, fournisseur.password);
+
+        if (!isOldPassword) {
+            res.status(500).json({
+                message: "L'ancien mot de passe est incorrect!"
+            });
+        } else {
+            const hash = bcrypt.hashSync(newPassword, 10);
+            fournisseur.password = hash;
+            await fournisseur.save();
+            res.status(201).json({
+                message: 'Mot de passe modifié',
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Erreur: "+error
+        })
+    }
 }

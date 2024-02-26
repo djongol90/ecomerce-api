@@ -3,8 +3,9 @@ import Commande from "../models/commande.model";
 
 export const createCommande = async (req: Request, res: Response) => {
     const data = req.body;
-
+    const userData = (req as any).userData
     try {
+        data.client = userData.userId;
         const newCommande = new Commande(data)
         await newCommande.save();
         res.status(201).json({

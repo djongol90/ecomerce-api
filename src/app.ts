@@ -9,7 +9,7 @@ const produitRouter = require('./routes/produit.route');
 const clientRouter = require('./routes/client.route');
 const commandeRouter = require('./routes/commande.route')
 
-
+require('dotenv').config();
 
 
 app.use(morgan('dev'));
